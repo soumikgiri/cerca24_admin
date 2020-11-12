@@ -1,0 +1,108 @@
+<div class="row">
+  <div class="col col-md-3">
+    <profile-card [user]="user"></profile-card>
+  </div>
+  <div class="col-md-9">
+    <div class="card">
+      <div class="card-body">
+        <form role="form" #frm="ngForm" (submit)="submit(frm)" ngNativeValidate method="post">
+          <div class="row">
+            <div class="col col-md-6">
+              <div class="form-group">
+                <label>First and last name (*)</label>
+                <input autocomplete="off" type="text" class="form-control" placeholder="Enter name"
+                  [(ngModel)]="info.name" required name="name" #name="ngModel" />
+                <div *ngIf="name.errors && (name.dirty || name.touched || isSubmitted)">
+                  <p [hidden]="!name.errors.required" style="color:red">
+                    Please enter user first name and last name!
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="col col-md-6">
+              <div class="form-group">
+                <label>Email (*)</label>
+                <input autocomplete="off" type="email" class="form-control" placeholder="user@example.com"
+                  [(ngModel)]="info.email" name="email" required #email="ngModel"
+                  pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" disabled />
+                <div *ngIf="email.errors && (email.dirty || email.touched || isSubmitted)">
+                  <p [hidden]="!email.errors.required" style="color:red">
+                    Email is required.
+                  </p>
+                  <p [hidden]="!email.errors.pattern" style="color:red">
+                    Please enter a valid email address.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <!-- <div class="col col-md-6">
+              <div class="form-group">
+                <label>Phone number</label>
+                <input autocomplete="off" type="text" class="form-control" [(ngModel)]="info.phoneNumber" name="phone" />
+              </div>
+            </div> -->
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Phone number</label>
+                <div class="input-group">
+                  <dial-code [dial]="dialCode" (selectCode)="selectDial($event)"></dial-code>
+                  <input class="form-control" type="text" pattern="[0-9]{9,10}" (change)="inputPhone()"
+                    autocomplete="off" placeholder="Enter mobile number" name="phoneNumber" [(ngModel)]="phone.number"
+                    #phoneNumber="ngModel" />
+                </div>
+                <div *ngIf="phoneNumber.errors && (phoneNumber.dirty || phoneNumber.touched || isSubmitted)">
+                  <p [hidden]="!phoneNumber.errors.pattern" class="error">
+                    Please enter 9 or 10 digits number
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="col col-md-6">
+              <div class="form-group">
+                <label>Address</label>
+                <input autocomplete="off" type="text" class="form-control" [(ngModel)]="info.address" name="address" />
+              </div>
+            </div>
+            <div class="col col-md-6">
+              <div class="form-group">
+                <label>Password (*)</label>
+                <input autocomplete="off" type="password" class="form-control" [(ngModel)]="info.password"
+                  name="password" #password="ngModel" minlength="6" />
+                <div *ngIf="password.errors && (password.dirty || password.touched || isSubmitted)">
+                  <p [hidden]="!password.errors.minlength" style="color:red">
+                    Password must be at least 6 characters!
+                  </p>
+                </div>
+                <p class="help help-block">
+                  <small>Blank to keep current password</small>
+                </p>
+              </div>
+            </div>
+            <div class="col col-md-6">
+              <div class="row">
+                <div class="col col-md-6">
+                  <div class="form-group">
+                    <label>Avatar</label>
+                    <div class="clearfix"></div>
+                    <img [src]="avatarUrl" class="avatar" width="150" (click)="swipe(avatarUrl)" />
+                  </div>
+                </div>
+                <div class="col col-md-6">
+                  <div class="form-group">
+                    <label>&nbsp;</label>
+                    <file-upload [options]="avatarOptions"></file-upload>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col col-md-12">
+              <div class="form-group">
+                <button class="btn btn-primary" type="submit">Save</button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

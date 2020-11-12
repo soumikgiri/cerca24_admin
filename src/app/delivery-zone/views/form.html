@@ -1,0 +1,47 @@
+<div class="card">
+  <div class="card-body">
+    <form #frm="ngForm" (submit)="submit(frm)">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Name</label>
+            <input [(ngModel)]="item.name" name="name" placeholder="Enter zone name" class="form-control" #zonename="ngModel"
+              required>
+          </div>
+          <div *ngIf="zonename.errors && (zonename.dirty || zonename.touched || submitted)">
+            <p [hidden]="!zonename.errors.required" class="error" translate>
+              Zone Name is required
+            </p>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>City</label>
+            <input type="text" name="city" class="form-control" [(ngModel)]="item.city" required disabled>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Delivery Price</label>
+            <input type="number" min="0" name="price" class="form-control" placeholder="Enter price" [(ngModel)]="item.deliveryPrice"
+              required>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Areas</label>
+            <ng-select [items]="areas" class="form-control" [multiple]="true" name="areas" [closeOnSelect]="false"
+              bindLabel="label" placeholder="Select areas" [(ngModel)]="item.areas">
+            </ng-select>
+          </div>
+        </div>
+        <div class="col-md-12">
+          <div class="form-group">
+            <button type="submit" class="btn btn-primary">Submit</button>&nbsp;
+            <button class="btn btn-warning" type="button" (click)="activeModal.dismiss('Close')">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,358 @@
+<div class="padding-main">
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="panel panel-default">
+          <div class="panel-heading resume-heading">
+            <div class="row">
+              <div class="col-lg-12">
+                <h3>General information</h3>
+                <ul class="list-group">
+                  <li class="list-group-item">
+                    <div class="row">
+                      <div class="col-md-2">
+                        Order
+                      </div>
+                      <div class="col-md-10">
+                        #<strong>{{ order?.trackingCode }}</strong>
+                      </div>
+                    </div>
+                  </li>
+                  <li class="list-group-item">
+                    <div class="row">
+                      <div class="col-md-2">
+                        IP
+                      </div>
+                      <div class="col-md-10">
+                        {{ order?.userIP }}
+                      </div>
+                    </div>
+                  </li>
+                  <li class="list-group-item">
+                    <div class="row">
+                      <div class="col-md-2">
+                        Created at
+                      </div>
+                      <div class="col-md-10">
+                        {{ order?.createdAt | date: 'short' }}
+                      </div>
+                    </div>
+                  </li>
+                  <li class="list-group-item">
+                    <div class="row">
+                      <div class="col-md-2">
+                        Payment method
+                      </div>
+                      <div class="col-md-10">
+                        <span class="label label-success" *ngIf="order.paymentMethod === 'cod'">COD</span>
+                        <span class="label label-warning" *ngIf="order.paymentMethod === 'stripe'">Credit Card</span>
+                        <span class="label label-primary" *ngIf="order.paymentMethod === 'paypal'">Paypal</span>
+                        <!-- <span class="label label-warning" *ngIf="order.paymentMethod === 'cybersource'">Card</span>
+                        <span class="label label-primary no-wrap" *ngIf="order.paymentMethod === 'mtn'">
+                          Mobile Money
+                        </span>
+                        <span class="label label-warning" *ngIf="order.paymentMethod === 'mygateglobal'">
+                          My gate global
+                        </span> -->
+                      </div>
+                    </div>
+                  </li>
+                  <li class="list-group-item">
+                    <div class="row">
+                      <div class="col-md-2">
+                        Payment status
+                      </div>
+                      <div class="col-md-10">
+                        <span class="badge badge-success">
+                          {{ order?.paymentStatus }}
+                        </span>
+                      </div>
+                    </div>
+                  </li>
+                  <li class="list-group-item">
+                    <div class="row">
+                      <div class="col-md-2">
+                        Transaction ID
+                      </div>
+                      <div class="col-md-10">
+                        {{ order?.transactionId }}
+                      </div>
+                    </div>
+                  </li>
+                  <li class="list-group-item">
+                    <div class="row">
+                      <div class="col-md-2">
+                        Total price
+                      </div>
+                      <div class="col-md-10 price-product no-wrap">
+                        {{ order?.totalPrice | currency: 'ZK ' }}
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+                <br />
+                <h3>Shipping/Picking details</h3>
+                <ul class="list-group">
+                  <li class="list-group-item">
+                    <div class="row">
+                      <div class="col-md-2">
+                        Name
+                      </div>
+                      <div class="col-md-10">{{ order?.firstName }} {{ order?.lastName }}</div>
+                    </div>
+                  </li>
+                  <li class="list-group-item">
+                    <div class="row">
+                      <div class="col-md-2">
+                        Email
+                      </div>
+                      <div class="col-md-4">
+                        {{ order?.email || order?.customer?.email }}
+                      </div>
+                      <div class="col-md-2">
+                        Phone number
+                      </div>
+                      <div class="col-md-4">
+                        {{ order?.phoneNumber }}
+                      </div>
+                    </div>
+                  </li>
+                  <li class="list-group-item">
+                    <div class="row">
+                      <div class="col-md-2">
+                        Street address
+                      </div>
+                      <div class="col-md-4">
+                        {{ order?.streetAddress }}
+                      </div>
+                      <div class="col-md-2">
+                        Area
+                      </div>
+                      <div class="col-md-4">
+                        {{ order?.state }}
+                      </div>
+                    </div>
+                  </li>
+                  <li class="list-group-item">
+                    <div class="row">
+                      <div class="col-md-2">
+                        City
+                      </div>
+                      <div class="col-md-4">
+                        {{ order?.city }}
+                      </div>
+                      <div class="col-md-2">
+                        Country
+                      </div>
+                      <div class="col-md-4">
+                        {{ order?.country }}
+                      </div>
+                    </div>
+                  </li>
+                  <!-- <li class="list-group-item">
+                    <div class="row">
+                      <div class="col-md-4">
+                        Google Pin
+                      </div>
+                      <div class="col-md-8">
+                        <a href="{{order?.zipCode}}" target="_blank">{{order?.zipCode}}</a>
+                      </div>
+                    </div>
+                  </li> -->
+                  <!-- <li class="list-group-item">
+                    <div class="row">
+                      <div class="col-md-2">
+                        Shipping address
+                      </div>
+                      <div class="col-md-10">
+                        {{order?.shippingAddress}}
+                      </div>
+                    </div>
+                  </li> -->
+                </ul>
+                <br />
+                <h3>Sub Orders</h3>
+                <div class="table-responsive">
+                  <table class="table table-hover table-custom bg-white">
+                    <thead>
+                      <tr>
+                        <th>ID</th>
+                        <!-- <th>QR Code</th> -->
+                        <th class="min-w-200">
+                          Product
+                        </th>
+                        <th>
+                          Quantity
+                        </th>
+                        <th class="min-w-158">
+                          Status
+                        </th>
+                        <th>
+                          <span>Tax</span>
+                          <!-- / <span>Shipping price</span> -->
+                        </th>
+                        <th>
+                          <span>Price</span>
+                        </th>
+                        <th>
+                          <span>Service Fee</span>
+                        </th>
+                        <th>
+                          <span>Balance</span>
+                        </th>
+                        <th>Shipping Information</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let item of details; let i = index">
+                        <td>{{ item?.trackingCode }}</td>
+                        <!-- <td>
+                          <img src="https://chart.googleapis.com/chart?cht=qr&chs=100x100&chl={{item?.QRCode}}">
+                        </td> -->
+                        <td>
+                          <p>
+                            <a [routerLink]="['/products/update', item.productDetails.alias]">{{
+                              item?.productDetails?.name
+                            }}</a>
+                            <br />
+                            Type:
+                            <span class="label label-primary text-capitalize"> {{ item?.productDetails?.type }} </span
+                            ><br />
+                            <span *ngIf="item.productDetails && item.productDetails.weight">
+                              Weight: {{ item?.productDetails?.weight }}{{ item?.productDetails?.weightType }} </span
+                            ><br />
+                            <span *ngIf="item.productDetails && item.productDetails.volume">
+                              Volume: {{ item?.productDetails?.volume }} m&#179;
+                            </span>
+                          </p>
+
+                          <p *ngIf="item.variantDetails">
+                            <span *ngFor="let option of item.variantDetails.options">
+                              {{ option?.displayText || option?.optionKey }}: {{ option?.value }}
+                            </span>
+                          </p>
+                        </td>
+                        <td>{{ item?.quantity }}</td>
+                        <td>
+                          <select name="status" [(ngModel)]="item.status" class="form-control">
+                            <option value="completed">Completed</option>
+                            <option value="shipping">Shipping</option>
+                            <option value="pending">Pending</option>
+                            <option value="progressing">Progressing</option>
+                            <option value="refunded">Refunded</option>
+                            <option value="cancelled">Cancelled</option>
+                          </select>
+                        </td>
+                        <td>
+                          <p>
+                            <span class="no-wrap"> <span>Tax</span> {{ item?.taxPrice | currency: 'ZK ' }} </span>
+                            <br />
+                            <!-- <span class="no-wrap">
+                              <span>Shipping</span> {{item?.shippingPrice | currency:'ZK '}}
+                            </span> -->
+                          </p>
+                        </td>
+                        <td class="no-wrap">
+                          {{ item?.productPrice | currency: 'ZK ' }}
+                        </td>
+                        <td>{{ item?.commissionRate * 100 }}% - {{ item?.commission | currency: 'ZK ' }}</td>
+
+                        <td class="no-wrap">
+                          {{ item?.balance | currency: 'ZK ' }}
+                        </td>
+                        <td *ngIf="!item.deliveryCompanyInfo">
+                          <p class="no-wrap">
+                            <strong>Method: </strong><span class="label label-info no-wrap">Pick Up At Store</span>
+                          </p>
+                          <p class="no-wrap"><strong>Shop: </strong> {{ item?.shopDetail?.name }}</p>
+                          <p><strong>Pickup address: </strong>{{ item?.pickUpAddressToString }}</p>
+                          <div>
+                            <strong>By: </strong>
+                            <span class="label label-primary">{{ item?.userPickUpInfo.pickUpBy }}</span>
+                            <p>{{ order?.userPickUpInfo?.pickUpBy }}</p>
+                            <p
+                              *ngIf="
+                                order.userPickUpInfo &&
+                                order.userPickUpInfo.pickUpBy === 'others' &&
+                                order.userPickUpInfo.name
+                              "
+                            >
+                              Name:
+                              {{ item?.userPickUpInfo?.name }}
+                            </p>
+                            <p
+                              *ngIf="
+                                order.userPickUpInfo &&
+                                order.userPickUpInfo.pickUpBy === 'others' &&
+                                order.userPickUpInfo.idNumber
+                              "
+                            >
+                              ID:
+                              {{ item?.userPickUpInfo?.idNumber }}
+                            </p>
+                            <p
+                              *ngIf="
+                                order.userPickUpInfo &&
+                                order.userPickUpInfo.pickUpBy === 'others' &&
+                                order.userPickUpInfo.phoneNumber
+                              "
+                            >
+                              Address:
+                              {{ item?.userPickUpInfo?.phoneNumber }}
+                            </p>
+                          </div>
+                        </td>
+                        <td *ngIf="item.deliveryCompanyInfo">
+                          <p class="no-wrap">
+                            <strong>Method: </strong><span class="label label-danger no-wrap">Delivery</span>
+                          </p>
+                          <p class="no-wrap">
+                            <strong>Company: </strong>
+                            {{ item?.deliveryCompanyInfo?.name }}
+                          </p>
+                          <p><strong>Pickup address: </strong>{{ item?.pickUpAddressToString }}</p>
+                          <p>
+                            <strong>Status: </strong>
+                            <span class="badge badge-warning text-capitalize">{{ item?.deliveryStatus }}</span>
+                          </p>
+                        </td>
+                        <td>
+                          <button class="btn btn-success btn-order" (click)="updateStatus(item, i)">
+                            Update Status</button
+                          ><br />
+                          <button
+                            *ngIf="item.deliveryCompanyInfo"
+                            class="btn btn-info btn-order"
+                            (click)="openMap(item)"
+                            [disabled]="
+                              item.deliveryStatus === 'deliveried' ||
+                              item.deliveryStatus === 'cancelled' ||
+                              item.deliveryStatus === 'postponed'
+                            "
+                          >
+                            Position Driver
+                          </button>
+                          <button
+                            *ngIf="item.deliveryHistory.length > 0"
+                            class="btn btn-warning btn-order"
+                            (click)="openHistoryStatus(item)"
+                            translate
+                          >
+                            Delivery History
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <br />
+                <a class="btn btn-warning" [routerLink]="['/orders/list']">Cancel</a>&nbsp;
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

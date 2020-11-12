@@ -1,0 +1,57 @@
+<div class="card">
+  <div class="card-body">
+    <div class="card-title">
+      <h4 *ngIf="type === 'seller'">Latest Request Payout of Seller</h4>
+      <h4 *ngIf="type === 'delivery'">Latest Request Payout of Delivery Company</h4>
+    </div>
+    <div class="comment-widgets">
+      <div class="card-body table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>
+                <span *ngIf="type === 'seller'">Shop</span>
+                <span *ngIf="type === 'delivery'">Delivery Company</span>
+              </th>
+              <th>Total</th>
+              <th>Service Fee</th>
+              <th>
+                <span *ngIf="type === 'seller'">Shop</span>
+                <span *ngIf="type === 'delivery'">Delivery Company</span>
+                Balance
+              </th>
+              <th>Site Balance</th>
+              <th>Paid</th>
+              <th>Created At</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of requestPayout">
+              <td>
+                <a [routerLink]="['/request-payout/seller', item?._id]" *ngIf="type === 'seller'">
+                  {{item?.shop?.name}}
+                </a>
+                <a [routerLink]="['/request-payout/delivery', item?._id]" *ngIf="type === 'delivery'">
+                  {{item?.company?.name}}
+                </a>
+              </td>
+              <td>{{item?.total | currency:"ZK "}}</td>
+              <td>{{item?.commission | currency:"ZK "}}</td>
+              <td>
+                <span *ngIf="type === 'seller'">{{item?.shopBalance | currency:"ZK "}}</span>
+                <span *ngIf="type === 'delivery'">{{item?.companyBalance | currency:"ZK "}}</span>
+              </td>
+              <td>{{item?.siteBalance | currency:"ZK "}}</td>
+              <td>
+                <span *ngIf="item.status ==='approved'" class="label label-success">Approved</span>
+                <span *ngIf="item.status ==='rejected'" class="label label-danger">Rejected</span>
+                <span *ngIf="item.status ==='pending'" class="label label-warning">Pending</span>
+              </td>
+              <td>{{item?.createdAt | date}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

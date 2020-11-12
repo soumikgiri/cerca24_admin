@@ -1,0 +1,20 @@
+<div class="row">
+  <div class="col-md-3">
+    <stat-card [stat]="shopStat" [type]="'shop'" *ngIf="shopStat"></stat-card>
+  </div>
+  <div class="col-md-3">
+    <stat-card [stat]="userStat" [type]="'user'" *ngIf="userStat"></stat-card>
+  </div>
+  <div class="col-md-3">
+    <stat-card [stat]="productStat" [type]="'product'" *ngIf="productStat"></stat-card>
+  </div>
+  <div class="col-md-3">
+    <stat-card [stat]="orderStat" [type]="'order'" *ngIf="orderStat"></stat-card>
+  </div>
+  <div class="col-lg-12 col-md-6">
+    <latest-request-card [type]="'seller'" [requestPayout]="sellerRequestPayout" *ngIf="sellerRequestPayout.length"></latest-request-card>
+  </div>
+  <div class="col-lg-12 col-md-6">
+    <latest-request-card [type]="'delivery'" [requestPayout]="deliveryRequestPayout" *ngIf="deliveryRequestPayout.length"></latest-request-card>
+  </div>
+</div>

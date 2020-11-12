@@ -1,0 +1,282 @@
+<div class="card">
+  <div class="card-body">
+    <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 100%"></div>
+    <form role="form" #frm="ngForm" (submit)="submit(frm)" ngNativeValidate method="post">
+      <div class="row">
+        <div class="col-md-3">
+          <div class="form-group">
+            <label>First Name (*)</label>
+            <input
+              autocomplete="off"
+              type="text"
+              class="form-control"
+              placeholder="Enter first name"
+              [(ngModel)]="driver.firstName"
+              required
+              name="firstName"
+              #firstName="ngModel"
+            />
+            <div *ngIf="firstName.errors && (firstName.dirty || firstName.touched || isSubmitted)">
+              <p [hidden]="!firstName.errors.required" style="color:red">
+                Please enter driver!
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="form-group">
+            <label>Last Name (*)</label>
+            <input
+              autocomplete="off"
+              type="text"
+              class="form-control"
+              placeholder="Enter last name"
+              [(ngModel)]="driver.lastName"
+              required
+              name="lastName"
+              #lastName="ngModel"
+            />
+            <div *ngIf="lastName.errors && (lastName.dirty || lastName.touched || isSubmitted)">
+              <p [hidden]="!lastName.errors.required" style="color:red">
+                Please enter driver!
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Email (*)</label>
+            <input
+              autocomplete="off"
+              type="text"
+              class="form-control"
+              placeholder="Enter email"
+              [(ngModel)]="driver.email"
+              name="email"
+              required
+              #email="ngModel"
+              pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+            />
+            <div *ngIf="email.errors && (email.dirty || email.touched || isSubmitted)">
+              <p [hidden]="!email.errors.required" style="color:red">
+                Please enter email!
+              </p>
+              <p [hidden]="!email.errors.pattern" style="color:red">
+                Invalid format, please try again!
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Address</label>
+            <input
+              autocomplete="off"
+              type="text"
+              class="form-control"
+              placeholder="Enter address"
+              [(ngModel)]="driver.address"
+              name="address"
+            />
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Phone number (*)</label>
+            <div class="input-group">
+              <dial-code [dial]="dialCode" (selectCode)="selectDial($event)"></dial-code>
+              <input
+                class="form-control"
+                required
+                type="text"
+                pattern="[0-9]{9,10}"
+                (change)="inputPhone()"
+                autocomplete="off"
+                placeholder="Enter mobile number"
+                name="phoneNumber"
+                [(ngModel)]="phone.number"
+                #phoneNumber="ngModel"
+              />
+            </div>
+            <div *ngIf="phoneNumber.errors && (phoneNumber.dirty || phoneNumber.touched || isSubmitted)">
+              <p [hidden]="!phoneNumber.errors.required" class="error">
+                Mobile number is required
+              </p>
+              <p [hidden]="!phoneNumber.errors.pattern" class="error">
+                Please enter 9 or 10 digits number
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Company (*)</label>
+            <input
+              type="text"
+              name="company"
+              class="form-control"
+              [class.is-invalid]="searchFailed"
+              [(ngModel)]="company"
+              *ngIf="!isUpdate"
+              [ngbTypeahead]="search"
+              placeholder="Search company"
+              [resultTemplate]="rt"
+              required
+              [inputFormatter]="formatter"
+            />
+            <input
+              type="text"
+              name="company"
+              class="form-control"
+              *ngIf="isUpdate"
+              readonly
+              [(ngModel)]="driver.companyName"
+              required
+            />
+            <span *ngIf="searching">searching...</span>
+            <div class="invalid-feedback" *ngIf="searchFailed">Sorry, suggestions could not be loaded.</div>
+            <ng-template #rt let-r="result" let-t="term">
+              <ngb-highlight [result]="r.name" [term]="t"></ngb-highlight>&nbsp;
+              <small>({{ r.name ? r.name : 'N/A' }})</small>
+            </ng-template>
+          </div>
+        </div>
+        <!-- <div class="col-md-6">
+          <div class="form-group">
+            <label>City</label>
+            <input autocomplete="off" type="text" class="form-control" placeholder="Enter city" [(ngModel)]="driver.city"
+              name="city" />
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>State</label>
+            <input autocomplete="off" type="text" class="form-control" placeholder="Enter state" [(ngModel)]="driver.state"
+              name="state" />
+          </div>
+        </div> -->
+        <div class="col-md-6" *ngIf="citySelected.areas && citySelected.areas.length">
+          <div class="form-group">
+            <label>Area (*)</label>
+            <select class="form-control" required name="area" [(ngModel)]="driver.state" #area="ngModel">
+              <option *ngFor="let area of citySelected.areas">{{ area }}</option>
+            </select>
+            <div *ngIf="area.errors && (area.dirty || area.touched)">
+              <p [hidden]="!area.errors.required" class="error">
+                Area is required
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>City (*)</label>
+            <select
+              class="form-control"
+              placeholder="City"
+              required
+              type="text"
+              name="city"
+              [(ngModel)]="driver.city"
+              #city="ngModel"
+              (change)="cityChange(driver.city)"
+            >
+              <option *ngFor="let city of cities" [value]="city.name">{{ city?.name }}</option>
+            </select>
+            <div *ngIf="city.errors && (city.dirty || city.touched || isSubmitted)">
+              <p [hidden]="!city.errors.required" class="error">
+                City is required
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Country</label>
+            <input
+              autocomplete="off"
+              type="text"
+              class="form-control"
+              placeholder="Enter country"
+              [(ngModel)]="driver.country"
+              name="country"
+              disabled
+            />
+          </div>
+        </div>
+        <div class="col-md-6" *ngIf="isUpdate">
+          <div class="form-group">
+            <label>Password</label>
+            <input
+              autocomplete="off"
+              type="password"
+              class="form-control"
+              [(ngModel)]="driver.password"
+              name="password"
+              #password="ngModel"
+              minlength="6"
+            />
+            <div *ngIf="password.errors && (password.dirty || password.touched || isSubmitted)">
+              <p [hidden]="!password.errors.minlength" style="color:red">
+                Password must be at least 6 characters!
+              </p>
+            </div>
+            <p class="help help-block">
+              <small>Blank to keep current password</small>
+            </p>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <div class="checkbox">
+              <label>
+                Active?
+                <input autocomplete="off" type="checkbox" [(ngModel)]="driver.activated" name="activated" />
+              </label>
+            </div>
+            <div class="checkbox">
+              <label>
+                Verified?
+                <input autocomplete="off" type="checkbox" [(ngModel)]="driver.emailVerified" name="emailVerified" />
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="col col-md-6">
+          <div class="form-group" *ngIf="!isUpdate">
+            <label>Avatar</label>
+            <p class="help help-block">
+              <small>Create driver before update avatar</small>
+            </p>
+          </div>
+          <div class="row" *ngIf="isUpdate">
+            <div class="col col-md-3">
+              <div class="form-group">
+                <label>Avatar</label>
+                <div class="clearfix"></div>
+                <img
+                  [src]="driver.avatarUrl"
+                  *ngIf="driver.avatarUrl"
+                  class="avatar"
+                  width="150"
+                  (click)="swipe(driver.avatarUrl)"
+                />
+              </div>
+            </div>
+            <div class="col col-md-4">
+              <div class="form-group">
+                <label>&nbsp;</label>
+                <file-upload [options]="avatarOptions"></file-upload>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-12">
+          <div class="form-group">
+            <button class="btn btn-primary" type="submit">Save</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

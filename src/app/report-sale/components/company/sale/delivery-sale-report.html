@@ -1,0 +1,47 @@
+<div class="card">
+  <div class="card-body table-responsive">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Company</th>
+          <th>Total Orders</th>
+          <th>Total Products</th>
+          <th>Total Price</th>
+          <th>Service Fee (Include 16% VAT)</th>
+          <th>Pay To Seller</th>
+        </tr>
+        <th>
+          <div class="input-group">
+            <input class="form-control" [(ngModel)]="searchFields.name" placeholder="search..."
+              (keypress)="keyPress($event)" />
+            <div class="input-group-append">
+              <button class="btn btn-outline-secondary fa fa-search" (click)="query()" type="button"></button>
+            </div>
+          </div>
+        </th>
+        <th colspan="6"></th>
+      </thead>
+      <tbody>
+        <tr *ngFor="let company of companies">
+          <td>
+            <a [routerLink]="['/companies/update', company?._id]">{{company?.name}}</a>
+          </td>
+          <td>{{company?.saleStats?.totalOrder | number}}</td>
+          <td>{{company?.saleStats?.totalProduct | number}}</td>
+          <td>{{company?.saleStats?.totalPrice | currency:"ZK "}}</td>
+          <td class="text-center">{{company?.saleStats?.commission | currency:"ZK "}}</td>
+          <td>{{company?.saleStats?.balance | currency:"ZK "}}</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="8" *ngIf="totalCompanies > 10">
+            <ngb-pagination [collectionSize]="totalCompanies" [(page)]="page" [maxSize]="5" (pageChange)="query()">
+            </ngb-pagination>
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+  <div class="card-footer"></div>
+</div>

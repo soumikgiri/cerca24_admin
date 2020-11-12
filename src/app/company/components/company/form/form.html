@@ -1,0 +1,353 @@
+<div class="card">
+  <div class="card-body">
+    <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 100%"></div>
+    <form role="form" #frm="ngForm" (submit)="submit(frm)" ngNativeValidate method="post">
+      <div class="row">
+        <div class="col-md-12" *ngIf="isUpdate">
+          <div class="nav flex-column nav-pills nav-top-cus" role="tablist" aria-orientation="vertical">
+            <a
+              class="nav-link"
+              data-toggle="tab"
+              role="tab"
+              aria-controls="home"
+              aria-selected="true"
+              [ngClass]="{ active: tab == 'information' }"
+              (click)="changeTab('information')"
+              >Update</a
+            >
+
+            <a
+              class="nav-link"
+              data-toggle="tab"
+              role="tab"
+              aria-controls="profile"
+              aria-selected="false"
+              [ngClass]="{ active: tab == 'category' }"
+              (click)="changeTab('category')"
+              >Category</a
+            >
+          </div>
+        </div>
+        <div class="col-md-12">
+          <div class="tab-content">
+            <div class="tab-pane fade show active" role="tabpanel" [ngClass]="{ 'show active': tab === 'information' }">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label>Company Name (*)</label>
+                    <input
+                      autocomplete="off"
+                      type="text"
+                      class="form-control"
+                      placeholder="Enter company name"
+                      [(ngModel)]="company.name"
+                      required
+                      name="name"
+                      #name="ngModel"
+                    />
+                    <div *ngIf="name.errors && (name.dirty || name.touched || isSubmitted)">
+                      <p [hidden]="!name.errors.required" style="color:red">
+                        Please enter company!
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label>Address (*)</label>
+                    <input
+                      autocomplete="off"
+                      type="text"
+                      class="form-control"
+                      placeholder="Enter address"
+                      [(ngModel)]="company.address"
+                      name="address"
+                      required
+                      #address="ngModel"
+                    />
+                    <div *ngIf="address.errors && (address.dirty || address.touched || isSubmitted)">
+                      <p [hidden]="!address.errors.required" style="color:red">
+                        Please enter address!
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label>Email (*)</label>
+                    <input
+                      autocomplete="off"
+                      type="text"
+                      class="form-control"
+                      placeholder="Enter email"
+                      [(ngModel)]="company.email"
+                      name="email"
+                      required
+                      #email="ngModel"
+                      pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+                    />
+                    <div *ngIf="email.errors && (email.dirty || email.touched || isSubmitted)">
+                      <p [hidden]="!email.errors.required" style="color:red">
+                        Please enter email!
+                      </p>
+                      <p [hidden]="!email.errors.pattern" style="color:red">
+                        Invalid format, please try again!
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label>Phone number (*)</label>
+                    <div class="input-group">
+                      <dial-code [dial]="dialCode" (selectCode)="selectDial($event)"></dial-code>
+                      <input
+                        class="form-control"
+                        required
+                        type="text"
+                        pattern="[0-9]{9,10}"
+                        (change)="inputPhone()"
+                        autocomplete="off"
+                        placeholder="Enter mobile number"
+                        name="phoneNumber"
+                        [(ngModel)]="phone.number"
+                        #phoneNumber="ngModel"
+                      />
+                    </div>
+                    <div *ngIf="phoneNumber.errors && (phoneNumber.dirty || phoneNumber.touched || isSubmitted)">
+                      <p [hidden]="!phoneNumber.errors.required" class="error">
+                        Mobile number is required
+                      </p>
+                      <p [hidden]="!phoneNumber.errors.pattern" class="error">
+                        Please enter 9 or 10 digits number
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col col-md-6" *ngIf="!isUpdate">
+                  <div class="form-group">
+                    <label>Password (*)</label>
+                    <input
+                      autocomplete="off"
+                      type="password"
+                      class="form-control"
+                      [(ngModel)]="company.password"
+                      name="password"
+                      required
+                      #password="ngModel"
+                      minlength="6"
+                    />
+                    <div *ngIf="password.errors && (password.dirty || password.touched || isSubmitted)">
+                      <p [hidden]="!password.errors.required" style="color:red">
+                        Please enter password!
+                      </p>
+                      <p [hidden]="!password.errors.minlength" style="color:red">
+                        Password must be at least 6 characters!
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <!-- <div class="col-md-6">
+                  <div class="form-group">
+                    <label>City (*)</label>
+                    <input autocomplete="off" type="text" class="form-control" placeholder="Enter city" [(ngModel)]="company.city"
+                      name="city" required #city="ngModel" />
+                    <div *ngIf="city.errors && (city.dirty || city.touched || isSubmitted)">
+                      <p [hidden]="!city.errors.required" style="color:red">
+                        Please enter city!
+                      </p>
+                    </div>
+                  </div>
+                </div> -->
+                <div class="col-md-6" *ngIf="citySelected.areas && citySelected.areas.length">
+                  <div class="form-group">
+                    <label>Area (*)</label>
+                    <select class="form-control" required name="area" [(ngModel)]="company.state" #area="ngModel">
+                      <option *ngFor="let area of citySelected.areas">{{ area }}</option>
+                    </select>
+                    <div *ngIf="area.errors && (area.dirty || area.touched)">
+                      <p [hidden]="!area.errors.required" class="error">
+                        Area is required
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label>City (*)</label>
+                    <select
+                      class="form-control"
+                      placeholder="City"
+                      required
+                      type="text"
+                      name="city"
+                      [(ngModel)]="company.city"
+                      #city="ngModel"
+                      (change)="cityChange(company.city)"
+                    >
+                      <option *ngFor="let city of cities" [value]="city.name">{{ city?.name }}</option>
+                    </select>
+                    <div *ngIf="city.errors && (city.dirty || city.touched || isSubmitted)">
+                      <p [hidden]="!city.errors.required" class="error">
+                        City is required
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <!-- <div class="col-md-6">
+                  <div class="form-group">
+                    <label>State (*)</label>
+                    <input autocomplete="off" type="text" class="form-control" placeholder="Enter state" [(ngModel)]="company.state"
+                      name="state" required #state="ngModel" />
+                    <div *ngIf="state.errors && (state.dirty || state.touched || isSubmitted)">
+                      <p [hidden]="!state.errors.required" style="color:red">
+                        Please enter State!
+                      </p>
+                    </div>
+                  </div>
+                </div> -->
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label>Country</label>
+                    <input
+                      autocomplete="off"
+                      type="text"
+                      class="form-control"
+                      placeholder="Enter country"
+                      [(ngModel)]="company.country"
+                      name="country"
+                      disabled
+                    />
+                  </div>
+                </div>
+                <div class="col-md-6" *ngIf="isUpdate">
+                  <div class="form-group">
+                    <label>Site Commission % (*)</label>
+                    <input
+                      type="number"
+                      name="siteCommission"
+                      min="1"
+                      max="100"
+                      class="form-control"
+                      [(ngModel)]="company.commission"
+                    />
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label
+                      >Verification Issue
+                      <media-select (onSelect)="selectVerificationIssue($event)"></media-select> </label
+                    ><br />
+                    <a href="{{ verificationIssue?.fileUrl }}" download target="_blank">
+                      <span *ngIf="verificationIssue.name"
+                        ><i class="fa fa-file"></i> {{ verificationIssue?.name }}</span
+                      >
+                    </a>
+                  </div>
+                </div>
+                <div class="col col-md-6">
+                  <div class="form-group" *ngIf="!isUpdate">
+                    <label>Logo</label>
+                    <p class="help help-block">
+                      <small>Create company before update logo</small>
+                    </p>
+                  </div>
+                  <div class="row" *ngIf="isUpdate">
+                    <div class="col col-md-3">
+                      <div class="form-group">
+                        <label>Logo</label>
+                        <div class="clearfix"></div>
+                        <img
+                          [src]="company.logoUrl"
+                          *ngIf="company.logoUrl"
+                          class="avatar"
+                          width="150"
+                          (click)="swipe(company.logoUrl)"
+                        />
+                      </div>
+                    </div>
+                    <div class="col col-md-4">
+                      <div class="form-group">
+                        <label>&nbsp;</label>
+                        <file-upload [options]="avatarOptions"></file-upload>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-12" *ngIf="isUpdate">
+                  <div class="form-group">
+                    <div class="checkbox">
+                      <label>
+                        Active?
+                        <input autocomplete="off" type="checkbox" [(ngModel)]="company.activated" name="activated" />
+                      </label>
+                    </div>
+                    <div class="checkbox">
+                      <label>
+                        Verified?
+                        <input autocomplete="off" type="checkbox" [(ngModel)]="company.verified" name="verified" />
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <small class="text-muted" *ngIf="isUpdate">Can select delivery price from Zone management</small
+                    ><br />
+                    <button class="btn btn-primary mr-3" type="submit">Save</button>
+                    <a class="btn btn-primary" *ngIf="isUpdate" [routerLink]="['/zones', company._id, 'listing']">
+                      Zone management </a
+                    ><br />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tab-content" *ngIf="isUpdate">
+            <div class="tab-pane fade show active" role="tabpanel" [ngClass]="{ 'show active': tab === 'category' }">
+              <div class="card-body table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>
+                        <a>Name</a>
+                      </th>
+                      <th>
+                        <a>Children</a>
+                      </th>
+                      <th>
+                        <a>Created At</a>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody *ngIf="categories && categories.length > 0">
+                    <tr *ngFor="let item of categories; let i = index">
+                      <td>{{ item?.name }}</td>
+                      <td>
+                        <span class="badge badge-info" *ngFor="let child of item.children" style="margin-right: 5px">
+                          <a [routerLink]="['/categories/update', child._id]" style="color: #fff">{{ child.name }}</a>
+                        </span>
+                      </td>
+                      <td>
+                        <span>{{ item?.createdAt | date }}</span>
+                      </td>
+                    </tr>
+                  </tbody>
+                  <tbody *ngIf="categories && categories.length < 1">
+                    <tr>
+                      <td colspan="4">
+                        <p><span class="badge badge-warning">No items found</span></p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

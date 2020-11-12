@@ -1,0 +1,408 @@
+<form role="form" #frm="ngForm" (submit)="submit(frm)" ngNativeValidate>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="form-group">
+        <label>Shop Name (*)</label>
+        <input
+          autocomplete="off"
+          type="text"
+          class="form-control"
+          placeholder="Enter shop name"
+          [(ngModel)]="shop.name"
+          required
+          name="name"
+          #name="ngModel"
+        />
+        <div *ngIf="name.errors && (name.dirty || name.touched || isSubmitted)">
+          <p [hidden]="!name.errors.required" style="color:red">
+            Please enter shop name!
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label>Shop Alias (example: http://sitename/shops/shop-alias)</label>
+        <input
+          autocomplete="off"
+          type="text"
+          class="form-control"
+          placeholder="Enter shop alias"
+          [(ngModel)]="shop.alias"
+          name="alias"
+        />
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group" *ngIf="shop.owner && shop.owner.name">
+        <label>Owner</label>
+        <input
+          autocomplete="off"
+          type="text"
+          class="form-control"
+          [(ngModel)]="shop.owner.name"
+          name="owner"
+          readonly
+        />
+      </div>
+    </div>
+    <div class="col-md-6"></div>
+    <div class="col-md-12">
+      <div class="form-group">
+        <label>Address</label>
+        <input
+          autocomplete="off"
+          type="text"
+          class="form-control"
+          placeholder="Enter address"
+          [(ngModel)]="shop.address"
+          name="address"
+          #address="ngModel"
+        />
+      </div>
+    </div>
+    <!-- <div class="col-md-6">
+      <div class="form-group">
+        <label>City</label>
+        <input autocomplete="off" type="text" class="form-control" placeholder="Enter city" [(ngModel)]="shop.city"
+          name="city" #city="ngModel" />
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label>Area</label>
+        <input autocomplete="off" type="text" class="form-control" placeholder="Enter area" [(ngModel)]="shop.area"
+          name="state" #state="ngModel" />
+      </div>
+    </div> -->
+    <div class="col-md-6" *ngIf="citySelected.areas && citySelected.areas.length">
+      <div class="form-group">
+        <label>Area (*)</label>
+        <select class="form-control" required name="area" [(ngModel)]="shop.area" #area="ngModel">
+          <option *ngFor="let area of citySelected.areas">{{ area }}</option>
+        </select>
+        <div *ngIf="area.errors && (area.dirty || area.touched)">
+          <p [hidden]="!area.errors.required" class="error">
+            Area is required
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label>City (*)</label>
+        <select
+          class="form-control"
+          placeholder="City"
+          required
+          type="text"
+          name="city"
+          [(ngModel)]="shop.city"
+          #city="ngModel"
+          (change)="cityChange(shop.city, 'address')"
+        >
+          <option *ngFor="let city of cities" [value]="city.name">{{ city?.name }}</option>
+        </select>
+        <div *ngIf="city.errors && (city.dirty || city.touched || isSubmitted)">
+          <p [hidden]="!city.errors.required" class="error">
+            City is required
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label>Country</label>
+        <input
+          autocomplete="off"
+          type="text"
+          class="form-control"
+          placeholder="Enter country"
+          [(ngModel)]="shop.country"
+          name="country"
+          #country="ngModel"
+        />
+      </div>
+    </div>
+    <!-- <div class="col-md-6">
+      <div class="form-group">
+        <label>Zip code</label>
+        <input autocomplete="off" type="text" class="form-control" placeholder="Enter zip code" [(ngModel)]="shop.zipcode"
+          name="zipcode" #zipcode="ngModel" />
+      </div>
+    </div> -->
+    <div class="col-md-6">
+      <div class="form-group">
+        <label>Email</label>
+        <input
+          autocomplete="off"
+          type="text"
+          class="form-control"
+          placeholder="Enter email"
+          [(ngModel)]="shop.email"
+          name="email"
+          #email="ngModel"
+        />
+      </div>
+    </div>
+    <!-- <div class="col-md-6">
+      <div class="form-group">
+        <label>Phone number</label>
+        <input autocomplete="off" type="text" class="form-control" placeholder="Enter phone number" [(ngModel)]="shop.phoneNumber"
+          name="phoneNumber" #phoneNumber="ngModel" />
+      </div>
+    </div> -->
+    <div class="col-md-6">
+      <div class="form-group">
+        <label>Phone number (*)</label>
+        <div class="input-group">
+          <dial-code [dial]="dialCode" (selectCode)="selectDial($event)"></dial-code>
+          <input
+            class="form-control"
+            type="text"
+            pattern="[0-9]{9,10}"
+            autocomplete="off"
+            (change)="inputPhone()"
+            placeholder="Enter mobile number"
+            required
+            name="phoneNumber"
+            [(ngModel)]="phone.number"
+            #phoneNumber="ngModel"
+          />
+        </div>
+        <div *ngIf="phoneNumber.errors && (phoneNumber.dirty || phoneNumber.touched || isSubmitted)">
+          <p [hidden]="!phoneNumber.errors.required" class="error">
+            Mobile number is required
+          </p>
+          <p [hidden]="!phoneNumber.errors.pattern" class="error">
+            Please enter 9 or 10 digits number
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-12">
+      <div class="form-group">
+        <label>Return Address</label>
+        <input
+          autocomplete="off"
+          type="text"
+          class="form-control"
+          placeholder="Enter return address"
+          [(ngModel)]="shop.returnAddress"
+          name="returnAddress"
+        />
+      </div>
+    </div>
+    <div class="col-md-12">
+      <div class="form-group">
+        <label>Pick Up Address</label>
+        <div class="">
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>
+                    Street Address
+                  </th>
+                  <th>
+                    City
+                  </th>
+                  <th>
+                    Area
+                  </th>
+                  <th>#</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <input name="newAreaStreet" [(ngModel)]="newPickUpAddress.street" class="form-control" />
+                  </td>
+                  <td>
+                    <select
+                      [(ngModel)]="newPickUpAddress.city"
+                      name="newCity"
+                      class="form-control"
+                      (change)="cityChange(newPickUpAddress.city, 'pickup')"
+                    >
+                      <option *ngFor="let c of cities" [value]="c.name">{{ c?.name }}</option>
+                    </select>
+                  </td>
+                  <td>
+                    <select [(ngModel)]="newPickUpAddress.area" name="newArea" class="form-control">
+                      <option *ngFor="let a of pickUpCitySelected.areas" [value]="a">{{ a }}</option>
+                    </select>
+                  </td>
+                  <td>
+                    <button class="btn btn-success" type="button" (click)="addNewPickUpAddress()">
+                      Add <i class="fa fa-plus"></i>
+                    </button>
+                  </td>
+                </tr>
+                <tr *ngFor="let area of shop.pickUpAddress; let i = index">
+                  <td>{{ area?.street }}</td>
+                  <td>{{ area?.city }}</td>
+                  <td>{{ area?.area }}</td>
+                  <td>
+                    <button class="btn" type="button" (click)="removePickUpAddress(i)">
+                      <i class="fa fa-trash"></i>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <!-- <ng-select bindValue="label" name="pickUpAddress" [items]="[]" [addTag]="addTag" [multiple]="true" [isOpen]="false"
+          [(ngModel)]="shop.pickUpAddress">
+        </ng-select> -->
+      </div>
+    </div>
+    <!-- <div class="col-md-12">
+      <div class="form-group">
+        <label>Header Text</label>
+        <input autocomplete="off" type="text" class="form-control" placeholder="Enter text" [(ngModel)]="shop.headerText" name="text" />
+      </div>
+    </div> -->
+    <div class="col-md-12">
+      <div class="form-group">
+        <label>Announcement</label>
+        <textarea
+          type="text"
+          class="form-control"
+          placeholder="fuzzy fuzzy ..."
+          [(ngModel)]="shop.announcement"
+          name="announcement"
+          cols="3"
+        ></textarea>
+      </div>
+    </div>
+    <div class="col-md-12">
+      <div class="form-group">
+        <label>Google analytics code</label>
+        <input
+          autocomplete="off"
+          type="text"
+          class="form-control"
+          placeholder="Enter Google anyalytics code"
+          [(ngModel)]="shop.gaCode"
+          name="gaCode"
+          #gaCode="ngModel"
+        />
+      </div>
+    </div>
+    <div class="col-md-12">
+      <div class="form-group">
+        <label>Logo <media-select (onSelect)="selectLogo($event)"></media-select></label><br />
+        <img
+          [src]="shop?.logo?.thumbUrl"
+          class="avatar"
+          width="150"
+          *ngIf="shop.logo"
+          (click)="swipe(shop.logo.fileUrl)"
+        />
+      </div>
+    </div>
+    <div class="col-md-12">
+      <div class="form-group">
+        <label>Banner <media-select (onSelect)="selectBanner($event)"></media-select></label><br />
+        <img
+          [src]="shop?.banner?.thumbUrl"
+          class="avatar"
+          width="150"
+          *ngIf="shop.banner"
+          (click)="swipe(shop.banner.fileUrl)"
+        />
+      </div>
+    </div>
+    <div class="col-md-12">
+      <div class="form-group">
+        <label>Verification Issue <media-select (onSelect)="selectVerificationIssue($event)"></media-select> </label
+        ><br />
+        <a
+          href="{{ shop?.verificationIssue?.fileUrl }}"
+          download
+          target="_blank"
+          *ngIf="shop?.verificationIssue?.fileUrl"
+        >
+          <i class="fa fa-file"></i> View document
+        </a>
+      </div>
+    </div>
+    <div class="col-md-12">
+      <div class="form-group">
+        <label>Service Fee (eg: 0.1, 0.15, 0.2 ...)</label>
+        <input
+          autocomplete="off"
+          type="text"
+          class="form-control"
+          placeholder="Enter commission here"
+          [(ngModel)]="shop.commission"
+          name="commission"
+        />
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label>VAT Registration Number</label>
+        <input
+          autocomplete="off"
+          type="text"
+          class="form-control"
+          placeholder="Enter VAT Registration Number here"
+          [(ngModel)]="shop.vatRegistrationNumber"
+          name="vatRegistrationNumber"
+        />
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label>TPIN Number</label>
+        <input
+          autocomplete="off"
+          type="text"
+          class="form-control"
+          placeholder="Enter TPIN Number here"
+          [(ngModel)]="shop.tpinNumber"
+          name="tpinNumber"
+        />
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label
+          ><input autocomplete="off" type="checkbox" [(ngModel)]="shop.activated" name="activated" /> Activated</label
+        >
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label><input autocomplete="off" type="checkbox" [(ngModel)]="shop.verified" name="verified" /> Verified</label>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label><input autocomplete="off" type="checkbox" [(ngModel)]="shop.featured" name="featured" /> Featured</label>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label
+          ><input autocomplete="off" type="checkbox" [(ngModel)]="shop.pickUpAtStore" name="pickUpAtStore" /> Pick Up At
+          Store</label
+        >
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label><input autocomplete="off" type="checkbox" [(ngModel)]="shop.doCOD" name="doCOD" /> Do COD</label>
+      </div>
+    </div>
+    <div class="col-md-12">
+      <div class="form-group">
+        <button class="btn btn-primary" type="submit">Save</button>&nbsp;
+        <a class="btn btn-warning" [routerLink]="['/shops']">Cancel</a>
+      </div>
+    </div>
+  </div>
+</form>

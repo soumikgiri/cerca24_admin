@@ -1,0 +1,76 @@
+<div class="card">
+  <div class="row">
+    <div class="col-sm-3">
+      <div class="list-cities-header">
+        <label class="city-list-title">List of cities</label>
+        <button class="btn btn-success btn-add pull-right" (click)="addNewZone()"><i class="fa fa-plus"></i> New
+          zone</button>
+      </div>
+      <div class="list-cities">
+        <p *ngFor="let c of cities" (click)="changeCity(c.name)" [ngClass]="{'active': c.name === selectedCity.name}">
+          {{c.name}}
+        </p>
+      </div>
+    </div>
+    <div class="col-sm-9">
+      <div class="card-body table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>
+                <a>Zone Name</a>
+              </th>
+              <th>
+                <a>Areas</a>
+              </th>
+              <th>
+                <a>Delivery Price</a>
+              </th>
+              <th>
+                <a>Created at</a>
+              </th>
+              <th>
+                Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody *ngIf="total && !loading">
+            <tr *ngFor="let item of items, let i = index">
+              <td>{{item?.name}}</td>
+              <td>
+                <!-- <span class="badge badge-warning" *ngFor="let area of item.areas">{{area}} </span> -->
+                {{item.areas.length}}
+              </td>
+              <td>
+                {{item?.deliveryPrice | currency:'ZWK '}}
+              </td>
+              <td>
+                <span>{{item.createdAt | date}}</span>
+              </td>
+              <td>
+                <a (click)="updateZone(item, i)">
+                  <i class="fa fa-pencil"></i>
+                </a>&nbsp;
+                <a (click)="remove(item, i)">
+                  <i class="fa fa-trash"></i>
+                </a>
+              </td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr *ngIf="total > 10">
+              <td colspan="4">
+                <ngb-pagination [collectionSize]="total" [(page)]="page" [maxSize]="5" (pageChange)="query()">
+                </ngb-pagination>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+        <div *ngIf="!total && !loading" class="text-center">
+          <span class="badge badge-warning">No zones found!</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card-footer"></div>
+</div>
